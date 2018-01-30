@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>N-Queens</title>
+    <script src="https://use.fontawesome.com/a45e8a07ca.js"></script>
+    <style>
+        #board {
+            line-height: 0px;
+        }
+
+        .box {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            width: 50px;
+            border: 1px solid black;
+            vertical-align: middle;
+            /* line-height: 50px; */
+        }
+
+        .white {
+            background-color: white;
+            color: black;
+        }
+
+        .black {
+            background-color: black;
+            color: white;
+        }
+
+        .kill {
+            background-color: brown;
+            border-radius: 50%;
+            height: 10px;
+            width: 10px;
+        }
+    </style>
+    <style type="text/css">
+        div.image {
+            width: 32px;
+            height: 32px;
+            max-width: 256px;
+            max-height: 256px;
+            border: 1px solid black;
+            border-radius: 50%;
+            background-color: white;
+            background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDIzNi44OTMgMjM2Ljg5MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjM2Ljg5MyAyMzYuODkzOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTIyMS4zMjMsNzUuMjM1Yy04LjU4NiwwLTE1LjU2Myw2Ljk4NC0xNS41NjMsMTUuNTY0YzAsMy4zNjEsMS4xMDIsNi40NiwyLjkyOSw5LjAwM2wtMjkuNDE3LDE4LjY3MmwtNy43MjgtMTYuNzUxICAgYy0xLjA5LTIuMzU2LTMuODcyLTMuMzUzLTYuMTk4LTIuMjgxbC0xOS40NzQsOC45NTRjLTAuNjkzLDAuMzIzLTEuMjI5LDAuODE2LTEuNjg3LDEuMzgybC0yMC4wOTctMzAuMjQ4ICAgYzUuNzg3LTIuMjY4LDkuOTAzLTcuODczLDkuOTAzLTE0LjQ1MmMwLTguNTgtNi45NzgtMTUuNTU4LTE1LjU1OC0xNS41NThjLTguNTgsMC0xNS41NTgsNi45NzgtMTUuNTU4LDE1LjU1OCAgIGMwLDYuNTkxLDQuMTIyLDEyLjE4NCw5LjkwNywxNC40NTJsLTIwLjA5NCwzMC4yNDhjLTAuNDQ1LTAuNTY2LTAuOTgtMS4wNi0xLjY4NC0xLjM4MmwtMTkuNDY3LTguOTU0ICAgYy0yLjMzMi0xLjA1OS01LjExMi0wLjA3LTYuMTk5LDIuMjgxbC03LjkwMSwxNy4wOEwyOC4xNzgsOTkuODA4YzEuODMzLTIuNTQ5LDIuOTM4LTUuNjQ4LDIuOTM4LTkuMDIxICAgYzAtOC41OC02Ljk3OC0xNS41NjMtMTUuNTU4LTE1LjU2M1MwLDgyLjIwNywwLDkwLjc4N2MwLDguNTgsNi45NzksMTUuNTU4LDE1LjU1OCwxNS41NThjMS42MzUsMCwzLjE3Mi0wLjMyNSw0LjY1Mi0wLjc5MSAgIGwzNy45ODQsNjAuMjgyYzAuODY4LDEuMzU3LDIuMzUsMi4xOTIsMy45NjEsMi4xOTJoMTEyLjU4YzEuNjA3LDAsMy4xMDUtMC44MzUsMy45NTgtMi4xOTJsMzcuOTgzLTYwLjI4MiAgIGMxLjQ4NiwwLjQ2NiwzLjAyMSwwLjc5MSw0LjY1MiwwLjc5MWM4LjU4NiwwLDE1LjU2NC02Ljk3OCwxNS41NjQtMTUuNTU4QzIzNi44OTMsODIuMjA3LDIyOS44OTYsNzUuMjM1LDIyMS4zMjMsNzUuMjM1eiAgICBNMTQ5Ljc2OSwxMTYuOTA2bDE1LjIyMy03LjAwMmw2LjI5NywxMy42MzdsLTEyLjYyMyw4LjAybC05LjY0LTE0LjQ3MUMxNDkuMjgyLDExNy4wMTMsMTQ5LjUyNiwxMTcuMDE5LDE0OS43NjksMTE2LjkwNnogICAgTTExOC40NCw1OC44NjhjMy40MjIsMCw2LjIwNSwyLjc4OSw2LjIwNSw2LjIxMWMwLDMuNDMxLTIuNzc2LDYuMjA1LTYuMjA1LDYuMjA1Yy0zLjQyMiwwLTYuMjA1LTIuNzc0LTYuMjA1LTYuMjA1ICAgQzExMi4yMjksNjEuNjYzLDExNS4wMTgsNTguODY4LDExOC40NCw1OC44Njh6IE03MS44NzYsMTA5LjkwNGwxNS4yMiw3LjAwMmMwLjIzOCwwLjExMywwLjQ4NCwwLjExMywwLjczNCwwLjE3bC05Ljk2OCwxNC45ODggICBsLTEyLjQ5OC04LjExTDcxLjg3NiwxMDkuOTA0eiBNOS4zNDcsOTAuNzk5YzAtMy40MjIsMi43ODMtNi4yMTEsNi4yMDUtNi4yMTFjMy40MjIsMCw2LjIwNSwyLjc4OSw2LjIwNSw2LjIxMSAgIGMwLDMuNDMxLTIuNzgzLDYuMjA1LTYuMjA1LDYuMjA1QzEyLjEzLDk3LjAwMyw5LjM0Nyw5NC4yMyw5LjM0Nyw5MC43OTl6IE0xNzIuMTQsMTU4LjY4N0g2NC43MjJsLTI1LjU3NC00MC41OWwzNy41MDMsMjQuMzMzICAgYzIuMTY1LDEuMzk1LDUuMDMzLDAuNzk3LDYuNDQyLTEuMzRsMzUuMzM1LTUzLjE1OGwzNC45Nyw1Mi42MWMxLjQwNywyLjExOCw0LjI1NywyLjczMyw2LjM5NCwxLjM2NGwzOC4xNjctMjQuMjI3TDE3Mi4xNCwxNTguNjg3ICAgeiBNMjIxLjMyMyw5Ny4wMWMtMy40MjIsMC02LjIxMS0yLjc3My02LjIxMS02LjIwNWMwLTMuNDIyLDIuNzg5LTYuMjExLDYuMjExLTYuMjExczYuMTk4LDIuNzg5LDYuMTk4LDYuMjExICAgQzIyNy41MjEsOTQuMjMsMjI0Ljc0NSw5Ny4wMSwyMjEuMzIzLDk3LjAxeiBNMTc5Ljc5NCwxODIuNjk3YzAsMi41NzUtMi4wOTUsNC42NzYtNC42NzYsNC42NzZINjEuNzYyICAgYy0yLjU4MiwwLTQuNjc2LTIuMTAxLTQuNjc2LTQuNjc2YzAtMi41ODIsMi4wOTUtNC42NzcsNC42NzYtNC42NzdoMTEzLjM1NkMxNzcuNywxNzguMDIsMTc5Ljc5NCwxODAuMTE1LDE3OS43OTQsMTgyLjY5N3oiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K)
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div id="board"></div>
+    </div>
+    <hr>
+    <div>
+        <input type="text" name="txt" id="txtInput">
+        <button>Submit</button>
+    </div>
+
+    <!-- <div class="image"></div> -->
+</body>
+
+</html>
+
+<script>
+    let boardX = 0;
+    let boardY = 0;
+
+    class Queen {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.killZone = this.getKillZone(this.x, this.y);
+        }
+
+        //check if is in KillZone
+        checkInKillZone(x, y) {
+            for (let k of this.killZone) {
+                if (k.x == x && k.y == y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        getKillZone(x, y) {
+            let resultArray = new Array();
+            let resultClean = new Array();
+            let count = 0;
+            count = Math.max(this.x, this.y, boardX - this.x, boardY - this.y);
+            for (let i = 1; i <= count; i++) {
+                resultArray.push({
+                    x: this.x + i,
+                    y: this.y + i
+                });
+                resultArray.push({
+                    x: this.x + i,
+                    y: this.y - i
+                });
+                resultArray.push({
+                    x: this.x - i,
+                    y: this.y + i
+                });
+                resultArray.push({
+                    x: this.x - i,
+                    y: this.y - i
+                });
+            }
+            //push cross
+            for (let item of resultArray) {
+                if (item.x > 0 && item.y > 0 && item.x <= boardX && item.y <= boardY) {
+                    resultClean.push(item);
+                }
+            }
+            //push axis-y
+            for (var ix = 1; ix <= boardX; ix++) {
+                resultClean.push({
+                    x: ix,
+                    y: this.y
+                });
+            }
+            //push axis-x
+            for (var iy = 1; iy <= boardY; iy++) {
+                resultClean.push({
+                    x: this.x,
+                    y: iy
+                });
+            }
+            return resultClean;
+        }
+    }
+
+    let solveQ = (solutionArray, x, borderX, borderY) => {
+        let nextMove = new Array();
+        let currentMove = new Array();
+        for (let y = 1; y <= borderY; y++) {
+            let currentQ = new Queen(x, y);
+            //check if can be attacted by other queen
+            for (let q of solutionArray) {
+                if (q.checkInKillZone(x, y)) {
+                    currentQ = null;
+                    break;
+                }
+            }
+            if (currentQ == null) {
+                continue;
+            }
+
+            // border reach limit then no next move
+            if (x == borderX) {
+                currentMove.push({
+                    x,
+                    y
+                });
+            } else {
+                //push to stack
+                solutionArray.push(currentQ);
+                // currentMove.push(currentQ);
+                console.log('solution', solutionArray);
+                nextMove = solveQ(solutionArray, x + 1, borderX, borderY);
+                if (nextMove != null && nextMove.length > 0) {
+                    currentMove.push({
+                        x,
+                        y,
+                        nextMove
+                    });
+                } 
+                //out of stack
+                solutionArray.pop();
+            }
+        }
+
+        return currentMove;
+    }
+
+    let expressSolution = (solution) => {
+        
+        if (!solution.nextMove || solution.nextMove.length == 0) {
+            return [{
+                x: solution.x,
+                y: solution.y
+            }];
+        }
+
+        let resultArrayList = new Array();
+        for (let s of solution.nextMove)
+        {
+            for(let r of expressSolution(s))
+            {
+                let arrayN = [{
+                    x: solution.x,
+                    y: solution.y
+                }];
+                arrayN = arrayN.concat(r);
+                resultArrayList.push(arrayN);
+            }
+        }
+        return resultArrayList;
+    }
+
+    let expandSolutionToArray = solutionArray => {
+        let resultArray = new Array();
+        for (let solution of solutionArray) {
+            let result = new Array();
+            result = expressSolution(solution);
+            resultArray = resultArray.concat(result);
+        }
+        return resultArray;
+    }
+
+    let getPlaceQueensResult = queenNum => {
+        boardX = boardY = queenNum;
+        let result = new Array();
+        let existsQ = new Array();
+        let qStack = new Array();
+        let breakLoop = false;
+        let addQ = true;
+        let displayArray = new Array();
+
+
+        var solution = solveQ(new Array(), 1, boardX, boardY);
+        console.log('result solution', solution);
+
+        //convert the solution to array structure
+        let solutionArrayList = expandSolutionToArray(solution);
+
+        console.log('solutionArrayList', solutionArrayList);
+        console.log('solutionArrayList[0]', solutionArrayList[0]);
+        for(let i of solutionArrayList[0])
+        {
+            console.log('i',i);
+            displayArray.push(new Queen(i.x,i.y));
+        }
+        console.log('displayArray',displayArray);
+        showBoard(displayArray);
+    }
+
+    let showBoard = qList => {
+        let showContent = '';
+        let board = document.querySelector('#board');
+        let switcher = false;
+        let boardBox = new Array();
+        for (let by = 1; by <= boardY; by++) {
+            boardBox.push('<div class="line-break">');
+            for (let bx = 1; bx <= boardX; bx++) {
+                let strBox = '';
+                let strColor = '';
+                let strQueen = '';
+                // if (switcher)
+                //     strBox = '<i class="fa fa-square-o fa-3" aria-hidden="true"></i>';
+                // else
+                //     strBox = '<i class="fa fa-square fa-3" aria-hidden="true"></i>';
+
+                if (switcher)
+                    strColor = "black";
+                else
+                    strColor = "white";
+
+                for (let q of qList) {
+                    for (let k of q.killZone) {
+                        if (k.x == bx && k.y == by) {
+                            strQueen = "<div class='kill'></div>";
+                        }
+                    }
+                    if (q.x == bx && q.y == by) {
+                        strQueen = "<div class='image'></div>";
+                        break;
+                    }
+                }
+                strBox = `<div class="box ${strColor}">${strQueen}</div>`;
+
+                boardBox.push(strBox);
+                switcher = !switcher;
+            }
+            switcher = !switcher;
+            boardBox.push('</div>');
+        }
+        showContent = boardBox.join('');
+        document.querySelector('#board').innerHTML = showContent;
+    }
+
+    //--------------------------------------------------------------------------------------
+    getPlaceQueensResult(4);
+</script>
