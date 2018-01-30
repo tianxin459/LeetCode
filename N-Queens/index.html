@@ -171,7 +171,7 @@
                         y,
                         nextMove
                     });
-                } 
+                }
                 //out of stack
                 solutionArray.pop();
             }
@@ -181,7 +181,7 @@
     }
 
     let expressSolution = (solution) => {
-        
+
         if (!solution.nextMove || solution.nextMove.length == 0) {
             return [{
                 x: solution.x,
@@ -190,10 +190,8 @@
         }
 
         let resultArrayList = new Array();
-        for (let s of solution.nextMove)
-        {
-            for(let r of expressSolution(s))
-            {
+        for (let s of solution.nextMove) {
+            for (let r of expressSolution(s)) {
                 let arrayN = [{
                     x: solution.x,
                     y: solution.y
@@ -233,12 +231,11 @@
 
         console.log('solutionArrayList', solutionArrayList);
         console.log('solutionArrayList[0]', solutionArrayList[0]);
-        for(let i of solutionArrayList[0])
-        {
-            console.log('i',i);
-            displayArray.push(new Queen(i.x,i.y));
+        for (let i of solutionArrayList[0]) {
+            console.log('i', i);
+            displayArray.push(new Queen(i.x, i.y));
         }
-        console.log('displayArray',displayArray);
+        console.log('displayArray', displayArray);
         showBoard(displayArray);
     }
 
